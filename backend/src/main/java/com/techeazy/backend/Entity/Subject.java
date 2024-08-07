@@ -24,7 +24,7 @@ public class Subject {
 
 
     @ManyToMany(mappedBy = "subjects")
+    @JsonIgnore
     Set<Student> students;
-
 
 }
