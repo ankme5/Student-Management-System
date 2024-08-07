@@ -1,6 +1,6 @@
 # Spring Boot Application with H2 Database
 
-This project is a Spring Boot application that utilizes an H2 in-memory database. It is packaged into a Docker container for easy deployment.
+This project is a Spring Boot application that utilizes an H2 in-memory databasew with spring security features. It is packaged into a Docker container for easy deployment.
 
 ## Prerequisites
 
