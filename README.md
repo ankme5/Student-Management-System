@@ -13,27 +13,35 @@ This project is a Spring Boot application that utilizes an H2 in-memory database
 
 #### Clone the repository containing the project: ####
 
-git clone https://github.com/ankme5/Student-Management-System.git 
-
-cd Student-Management-System/backend
+    ```bash
+    
+    git clone https://github.com/ankme5/Student-Management-System.git 
+    
+    cd Student-Management-System/backend
 
 ### 2. Build the Spring Boot Application 
 
 #### Build the Spring Boot JAR file: ####
 
-./mvnw clean package
+    ```bash
+    
+    ./mvnw clean package
 
 ### 3. Build the Docker Image
 
 #### Create the Docker image from the Dockerfile provided: ####
 
-docker build -t your-image-name .
+     ```bash
+    
+    docker build -t your-image-name .
 
 ### 4. Run the Docker Container
 
 #### Run the Docker container from the image: ####
 
-docker run -p 8080:8080 your-image-name
+    ```bash
+    
+    docker run -p 8080:8080 your-image-name
 
 ## API Endpoint: The application will be accessible at http://localhost:8080.
 
