@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,27 +35,18 @@ public class AuthServices {
     private CustomResponse response=new CustomResponse();
 
 
-    public CustomResponse registration(Users users) {
+    public void registration(Users users) {
 
-        try {
-            if (users.getUsername() == null || users.getPassword() == null || users.getRole() == null) {
-                throw new MissingFieldException("Username,password and role is Mandatory");
-            }
-            users.setPassword(new BCryptPasswordEncoder(12).encode(users.getPassword()));
-            users.setRole("ROLE_"+users.getRole().toUpperCase());
-            userDao.save(users);
-            response.setMessage("Register Successfully");
-            response.setStatus(HttpStatus.CREATED);
-            response.setStatusCode(HttpStatus.CREATED.value());
-        }catch (Exception e){
-            response.setStatusCode(HttpStatus.NOT_ACCEPTABLE.value());
-            response.setStatus(HttpStatus.NOT_ACCEPTABLE);
-            response.setMessage(e.getMessage());
+        if (users.getUsername() == null || users.getPassword() == null || users.getRole() == null ||
+                users.getUsername().isEmpty() || users.getPassword().isEmpty() || users.getRole().isEmpty()) {
+            throw new MissingFieldException("Username,password and role is Mandatory");
         }
-        return  response;
+        users.setPassword(new BCryptPasswordEncoder(12).encode(users.getPassword()));
+        users.setRole("ROLE_"+users.getRole().toUpperCase());
+        userDao.save(users);
     }
 
-    public CustomResponse login(Users users) {
+    public void login(Users users) throws AuthenticationException{
 
         Authentication authentication = manager
                 .authenticate(new UsernamePasswordAuthenticationToken(users.getUsername(), users.getPassword()));
@@ -62,15 +54,7 @@ public class AuthServices {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String Token = jwtHelper.generateToken(userDetails.getUsername(), userDetails.getAuthorities().iterator().next().getAuthority());
             userDao.updateToken(Token, userDetails.getUsername());
-            response.setStatusCode(HttpStatus.OK.value());
-            response.setMessage("Login Successfully");
-            response.setStatus(HttpStatus.OK);
-        } else {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-            response.setMessage("Login Failed");
-            response.setStatus(HttpStatus.UNAUTHORIZED);
         }
-        return response;
     }
 
     public Map<String, String> fetchToken(Users users) {

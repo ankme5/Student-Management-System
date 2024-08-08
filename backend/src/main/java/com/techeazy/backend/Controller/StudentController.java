@@ -41,8 +41,16 @@ public class StudentController {
 
     @PostMapping("/{id}/enrollSubject")
     public ResponseEntity<CustomResponse> enrollSubject(@PathVariable Long id, @RequestBody Subject subject){
-        response=service.enrollSubject(id,subject);
-
+        try {
+            service.enrollSubject(id, subject);
+            response.setStatus(HttpStatus.OK);
+            response.setMessage("Student enrolled in " + subject.getName() + " successfully");
+            response.setStatusCode(HttpStatus.OK.value());
+        }catch (Exception e){
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        }
         return new ResponseEntity<>(response,response.getStatus());
     }
 

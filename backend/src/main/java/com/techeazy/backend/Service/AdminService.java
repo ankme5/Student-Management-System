@@ -3,6 +3,7 @@ package com.techeazy.backend.Service;
 import com.techeazy.backend.Entity.CustomResponse;
 import com.techeazy.backend.Entity.Student;
 import com.techeazy.backend.Entity.Subject;
+import com.techeazy.backend.Exception.MissingFieldException;
 import com.techeazy.backend.Repo.StudentDao;
 import com.techeazy.backend.Repo.SubjectDao;
 import org.slf4j.Logger;
@@ -22,37 +23,19 @@ public class AdminService {
     @Autowired
     private StudentDao studentDao;
 
-    private CustomResponse response=new CustomResponse();
 
-    public CustomResponse saveStudent(Student student){
-        try {
-            studentDao.save(student);
-            response.setMessage(student.getName()+" Student Created Successfully");
-            response.setStatus(HttpStatus.CREATED);
-            response.setStatusCode(HttpStatus.CREATED.value());
-            logger.info("SuccessFully Save Student");
-        }catch (Exception e)
-        {
-            response.setMessage(e.getMessage());
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
-        return response;
+    public void saveStudent(Student student){
+        if(student.getName() == null|| student.getAddress() ==null || student.getName().isEmpty() || student.getAddress().isEmpty())
+            throw new MissingFieldException("Name and Address Required");
+        studentDao.save(student);
+        logger.info("SuccessFully Save Student");
     }
 
-    public CustomResponse saveSubject(Subject subject){
-        try {
-            subjectDao.save(subject);
-            response.setMessage(subject.getName()+" Subject Created Successfully");
-            response.setStatus(HttpStatus.CREATED);
-            response.setStatusCode(HttpStatus.CREATED.value());
-            logger.info("SuccessFully Save Subject");
-        }catch (Exception e)
-        {
-            response.setMessage(e.getMessage());
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
-        return response;
+    public void saveSubject(Subject subject){
+
+        if(subject.getName() == null|| subject.getName().isEmpty())
+            throw new MissingFieldException("Subject Name Required");
+        subjectDao.save(subject);
+        logger.info("SuccessFully Save Subject");
     }
 }

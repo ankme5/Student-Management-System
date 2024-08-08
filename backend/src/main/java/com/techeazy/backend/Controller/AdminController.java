@@ -24,16 +24,40 @@ public class AdminController {
     @Autowired
     private AdminService service;
 
+    private final CustomResponse response=new CustomResponse();
+
     @PostMapping("/create_student")
     public ResponseEntity<CustomResponse> create_students(@RequestBody Student student){
-        logger.info("Started Create Student API");
-        return new ResponseEntity<>(service.saveStudent(student), HttpStatus.OK);
+        try {
+            service.saveStudent(student);
+            logger.info("Started Create Student API");
+            response.setMessage(student.getName() + " Student Created Successfully");
+            response.setStatus(HttpStatus.CREATED);
+            response.setStatusCode(HttpStatus.CREATED.value());
+        }catch (Exception e){
+            response.setMessage(e.getMessage());
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return new ResponseEntity<>(response, response.getStatus());
+
     }
 
     @PostMapping("/create_subject")
     public ResponseEntity<CustomResponse> create_subject(@RequestBody Subject subject){
         logger.info("Started Create subject API");
-        return new ResponseEntity<>(service.saveSubject(subject), HttpStatus.OK);
+        try {
+            service.saveSubject(subject);
+            logger.info("Started Create Subject API");
+            response.setMessage(subject.getName() + " Subject Created Successfully");
+            response.setStatus(HttpStatus.CREATED);
+            response.setStatusCode(HttpStatus.CREATED.value());
+        }catch (Exception e){
+            response.setMessage(e.getMessage());
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return new ResponseEntity<>(response, response.getStatus());
     }
 
 }
