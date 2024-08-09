@@ -37,7 +37,7 @@ public class JWTHelper {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .verifyWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
